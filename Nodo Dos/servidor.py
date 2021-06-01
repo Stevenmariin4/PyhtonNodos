@@ -34,12 +34,19 @@ def consultar():
             respuesta = requests.get(vecino)
             jsonRespuesta = json.loads(respuesta.content)
             if(len(jsonRespuesta['Resultado']) > 0):
+                print(jsonRespuesta)
                 for data in jsonRespuesta['Resultado']:
                     sumaTotal = sumaTotal + data['Total']
                     valorNodo.append(data)
         return jsonify({'Resultado': valorNodo, "Total": sumaTotal})
     else:
-        return jsonify({'Resultado': []})
+        return jsonify({'Resultado': [], "Total": 0})
+
+
+@app.route('/reset')
+def resetStatus():
+    statusresponse['Status'] = False
+    return jsonify({'Resulta': "Operacion Realizada"})
 
 
 if __name__ == "__main__":

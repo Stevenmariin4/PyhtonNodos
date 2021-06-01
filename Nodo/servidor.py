@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from lista import lista, vecinos, statusresponse
+from lista import lista, vecinos, statusresponse, resetVecino
 import requests
 import json
 app = Flask(__name__)
@@ -34,11 +34,20 @@ def consultar():
             respuesta = requests.get(vecino)
             jsonRespuesta = json.loads(respuesta.content)
             if(len(jsonRespuesta['Resultado']) > 0):
-                sumaTotal = sumaTotal + jsonRespuesta['Total']
-                valorNodo.append(jsonRespuesta)
+                print(jsonRespuesta)
+                for data in jsonRespuesta['Resultado']:
+                    sumaTotal = sumaTotal + data['Total']
+                    valorNodo.append(data)
+        resetStatus()
         return jsonify({'Resultado': valorNodo, "Total": sumaTotal})
     else:
-        return jsonify({'Resultado': []})
+        return jsonify({'Resultado': [], "Total": 0})
+
+
+def resetStatus():
+    statusresponse['Status'] = False
+    for vecino in resetVecino:
+        respuesta = requests.get(vecino)
 
 
 if __name__ == "__main__":
